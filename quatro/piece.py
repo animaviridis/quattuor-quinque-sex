@@ -53,8 +53,11 @@ class Piece(object):
         self._properties = tuple((pt.get_member(props[i]) for i, pt in enumerate(self.PROP_TEMPLATES)))
         self._code = ''.join((p.code for p in self._properties))
 
+        self.position = None
+
     def __repr__(self):
-        return f"Piece '{self.code}' ('{self.value_code}') - {', '.join((p.name for p in self.properties))}"
+        t = 'taken' if self.taken else 'available'
+        return f"Piece '{self.code}' ('{self.value_code}') - {', '.join((p.name for p in self.properties))} ({t})"
 
     @property
     def value(self):
@@ -71,6 +74,10 @@ class Piece(object):
     @property
     def code(self):
         return self._code
+
+    @property
+    def taken(self):
+        return self.position is not None
 
 
 if __name__ == '__main__':
