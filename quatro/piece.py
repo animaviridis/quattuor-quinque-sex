@@ -1,4 +1,5 @@
 from enum import Enum, unique
+from itertools import product
 
 
 @unique
@@ -23,6 +24,10 @@ class PieceProperty(int, Enum):
         if not ms:
             raise ValueError(f"No member with value {value}")
         return ms[0]
+
+    @classmethod
+    def get_all_values(cls):
+        return [m.value for m in cls]
 
 
 class Piece(object):
@@ -79,9 +84,17 @@ class Piece(object):
     def taken(self):
         return self.position is not None
 
+    @staticmethod
+    def generate_pieces():
+        possible_values = (pt.get_all_values() for pt in Piece.PROP_TEMPLATES)
+        all_pieces = [Piece(*value) for value in product(*possible_values)]
+        return {piece.code: piece for piece in all_pieces}
+
 
 if __name__ == '__main__':
     color = PieceProperty('Color', ['Blue', 'Red'])
 
-    piece = Piece(0, 1, 0, 0)
-    print(piece)
+    a_piece = Piece(0, 1, 0, 0)
+    print(a_piece)
+
+    pieces = Piece.generate_pieces()
