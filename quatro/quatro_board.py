@@ -1,4 +1,6 @@
 import numpy as np
+from typing import Tuple
+from time import sleep
 
 from quatro_piece import Piece
 from misc import log_exceptions
@@ -11,8 +13,12 @@ class Board(object):
     which is already occupied. Once placed, a piece cannot be moved.
     """
 
+    PIECES = Piece.generate_pieces()
+
     def __init__(self):
         self._board_state = np.zeros((4, 4), dtype=Piece)
+        self._pieces_available = set(self.PIECES.keys())
+        self._pieces_taken = set()
 
     def __repr__(self):
         b = ''
@@ -29,25 +35,36 @@ class Board(object):
         return f"Game board state: \n{b}"
 
     @log_exceptions("quattro_board")
-    def put_piece(self, piece, pos):
+    def put_piece(self, piece_code: str, pos: Tuple[int, int]):
         if not isinstance(pos, tuple):
             raise TypeError(f"'pos' should be a tuple (got {type(pos)})")
 
         if (len(pos) != 2) or any(map(lambda p: not isinstance(p, int), pos)):
             raise ValueError(f"'pos' should be a 2-tuple of integers")
 
-        if not isinstance(piece, Piece):
-            raise TypeError(f"'piece' should be an instance of Piece (got {type(piece)})")
+        if piece_code in self._pieces_taken:
+            raise RuntimeError(f"Piece {piece_code} has already been taken")
+
+        if piece_code not in self._pieces_available:
+            raise RuntimeError(f"'{piece_code}' is not a valid piece code")
 
         if self._board_state[pos]:
             raise RuntimeError(f"Board position {pos} is already occupied")
 
+        piece = self.PIECES[piece_code]
         self._board_state[pos] = piece
+        self._pieces_available.remove(piece_code)
+        self._pieces_taken.add(piece_code)
         piece.position = pos
 
 
 if __name__ == '__main__':
     board = Board()
-    board.put_piece(Piece(0, 1, 0, 0), (2, 3))
-    board.put_piece(Piece(1, 1, 0, 1), (1, 0))
+    board.put_piece('TBCH', (2, 3))
+    board.put_piece('SRSS', (1, 0))
     print(board)
+    sleep(0.1)
+
+    board.put_piece('SRSS', (1, 2))
+    board.put_piece('TBSH', (1, 0))
+    board.put_piece('ABBC', (1, 0))
