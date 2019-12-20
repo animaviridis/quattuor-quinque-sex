@@ -47,4 +47,5 @@ class Board(object):
 if __name__ == '__main__':
     board = Board()
     board.put_piece(Piece(0, 1, 0, 0), (2, 3))
+    board.put_piece(Piece(1, 1, 0, 1), (1, 0))
     print(board)
