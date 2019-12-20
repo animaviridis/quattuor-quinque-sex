@@ -1,6 +1,6 @@
 import numpy as np
 
-from piece import Piece
+from quatro_piece import Piece
 
 
 class Board(object):
@@ -27,7 +27,21 @@ class Board(object):
 
         return f"Game board state: \n{b}"
 
+    def put_piece(self, piece, pos):
+        if not isinstance(pos, tuple):
+            raise TypeError(f"'pos' should be a tuple (got {type(pos)})")
+
+        if (len(pos) != 2) or any(map(lambda p: not isinstance(p, int), pos)):
+            raise ValueError(f"'pos' should be a 2-tuple of integers")
+
+        if not isinstance(piece, Piece):
+            raise TypeError(f"'piece' should be an instance of Piece (got {type(piece)})")
+
+        self._board_state[pos] = piece
+        piece.position = pos
+
 
 if __name__ == '__main__':
     board = Board()
+    board.put_piece(Piece(0, 1, 0, 0), (2, 3))
     print(board)
