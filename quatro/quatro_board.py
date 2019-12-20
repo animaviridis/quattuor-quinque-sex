@@ -37,6 +37,9 @@ class Board(object):
         if not isinstance(piece, Piece):
             raise TypeError(f"'piece' should be an instance of Piece (got {type(piece)})")
 
+        if self._board_state[pos]:
+            raise RuntimeError(f"Board position {pos} is already occupied")
+
         self._board_state[pos] = piece
         piece.position = pos
 
