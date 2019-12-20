@@ -1,6 +1,7 @@
 import numpy as np
 
 from quatro_piece import Piece
+from misc import log_exceptions
 
 
 class Board(object):
@@ -27,6 +28,7 @@ class Board(object):
 
         return f"Game board state: \n{b}"
 
+    @log_exceptions("quattro_board")
     def put_piece(self, piece, pos):
         if not isinstance(pos, tuple):
             raise TypeError(f"'pos' should be a tuple (got {type(pos)})")
