@@ -1,6 +1,7 @@
 import random
 
 from quatro.quatro_board import Board
+from misc import log_exceptions
 
 
 class Player(object):
@@ -21,10 +22,10 @@ class Player(object):
     def _pick_piece_random(self):
         return random.choice(self._board.piece_codes_available)
 
-    def pick_field(self):
-        return self._pick_field_method()
+    def pick_field(self, piece_code):
+        return self._pick_field_method(piece_code)
 
-    def _pick_field_random(self):
+    def _pick_field_random(self, *args):
         return random.choice(self._board.board_fields_available)
 
 

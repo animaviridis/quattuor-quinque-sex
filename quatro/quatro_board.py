@@ -77,22 +77,26 @@ class Board(object):
 
         return list(zip(*np.where(not self.board_fields_taken_state)))
 
-    @log_exceptions("quattro_board")
-    def put_piece(self, piece_code: str, pos: Tuple[int, int]):
-        if not isinstance(pos, tuple):
-            raise TypeError(f"'pos' should be a tuple (got {type(pos)})")
-
-        if (len(pos) != 2) or any(map(lambda p: not isinstance(p, int), pos)):
-            raise ValueError(f"'pos' should be a 2-tuple of integers")
-
+    def check_piece(self, piece_code):
         if piece_code in self._piece_codes_taken:
             raise RuntimeError(f"Piece {piece_code} has already been taken")
 
         if piece_code not in self._piece_codes_available:
             raise RuntimeError(f"'{piece_code}' is not a valid piece code")
 
+    def check_field(self, pos):
+        if not isinstance(pos, tuple):
+            raise TypeError(f"'pos' should be a tuple (got {type(pos)})")
+
+        if (len(pos) != 2) or any(map(lambda p: not isinstance(p, int), pos)):
+            raise ValueError(f"'pos' should be a 2-tuple of integers")
+
         if self._board_state[pos]:
             raise RuntimeError(f"Board position {pos} is already occupied")
+
+    def put_piece(self, piece_code: str, pos: Tuple[int, int]):
+        self.check_field(pos)
+        self.check_piece(piece_code)
 
         piece = self.PIECES[piece_code]
         self._board_state[pos] = piece
@@ -107,7 +111,3 @@ if __name__ == '__main__':
     board.put_piece('SRSS', (1, 0))
     print(board)
     sleep(0.1)
-
-    board.put_piece('SRSS', (1, 2))
-    board.put_piece('TBSH', (1, 0))
-    board.put_piece('ABBC', (1, 0))
