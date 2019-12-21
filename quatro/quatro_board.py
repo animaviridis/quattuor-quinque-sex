@@ -59,6 +59,24 @@ class Board(object):
         pieces = self.PIECES
         return {pieces[code].value for code in self._piece_codes_available}
 
+    @property
+    def board_state(self):
+        """Current state of the board (array of piece objects and zeros where there is no piece)"""
+
+        return self._board_state
+
+    @property
+    def board_fields_taken_state(self):
+        """State of the board fields (boolean array: True if a field is taken, False otherwise)"""
+
+        return self._board_state != 0
+
+    @property
+    def board_fields_available(self):
+        """List of coordinates (2-tuples of ints) of available (not yet taken) fields of the board."""
+
+        return list(zip(*np.where(not self.board_fields_taken_state)))
+
     @log_exceptions("quattro_board")
     def put_piece(self, piece_code: str, pos: Tuple[int, int]):
         if not isinstance(pos, tuple):
