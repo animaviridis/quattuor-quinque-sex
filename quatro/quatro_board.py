@@ -17,8 +17,8 @@ class Board(object):
 
     def __init__(self):
         self._board_state = np.zeros((4, 4), dtype=Piece)
-        self._pieces_available = set(self.PIECES.keys())
-        self._pieces_taken = set()
+        self._piece_codes_available = set(self.PIECES.keys())
+        self._piece_codes_taken = set()
 
     def __repr__(self):
         b = ''
@@ -34,6 +34,31 @@ class Board(object):
 
         return f"Game board state: \n{b}"
 
+    @property
+    def pieces_available(self):
+        return {code: self.PIECES[code] for code in self._piece_codes_available}
+
+    @property
+    def pieces_taken(self):
+        return {code: self.PIECES[code] for code in self._piece_codes_taken}
+
+    @property
+    def piece_codes_available(self):
+        return self._piece_codes_available
+
+    @property
+    def piece_codes_taken(self):
+        return self._piece_codes_taken
+
+    @property
+    def piece_codes(self):
+        return set(self.PIECES.keys())
+
+    @property
+    def piece_values_available(self):
+        pieces = self.PIECES
+        return {pieces[code].value for code in self._piece_codes_available}
+
     @log_exceptions("quattro_board")
     def put_piece(self, piece_code: str, pos: Tuple[int, int]):
         if not isinstance(pos, tuple):
@@ -42,10 +67,10 @@ class Board(object):
         if (len(pos) != 2) or any(map(lambda p: not isinstance(p, int), pos)):
             raise ValueError(f"'pos' should be a 2-tuple of integers")
 
-        if piece_code in self._pieces_taken:
+        if piece_code in self._piece_codes_taken:
             raise RuntimeError(f"Piece {piece_code} has already been taken")
 
-        if piece_code not in self._pieces_available:
+        if piece_code not in self._piece_codes_available:
             raise RuntimeError(f"'{piece_code}' is not a valid piece code")
 
         if self._board_state[pos]:
@@ -53,8 +78,8 @@ class Board(object):
 
         piece = self.PIECES[piece_code]
         self._board_state[pos] = piece
-        self._pieces_available.remove(piece_code)
-        self._pieces_taken.add(piece_code)
+        self._piece_codes_available.remove(piece_code)
+        self._piece_codes_taken.add(piece_code)
         piece.position = pos
 
 
