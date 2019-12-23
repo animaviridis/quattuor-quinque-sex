@@ -77,6 +77,12 @@ class Board(object):
 
         return list(zip(*np.where(not self.board_fields_taken_state)))
 
+    @property
+    def empty(self) -> bool:
+        """Returns True if the board is empty (no fields occupied), False otherwise"""
+
+        return not self.board_fields_taken_state.any()
+
     def check_piece(self, piece_code):
         if piece_code in self._piece_codes_taken:
             raise RuntimeError(f"Piece {piece_code} has already been taken")
