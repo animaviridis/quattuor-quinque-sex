@@ -4,7 +4,7 @@ from time import sleep
 from typing import Tuple, Union
 
 from quatro.quatro_board import Board
-from misc import log_exceptions
+from quatro.misc import log_exceptions
 
 
 class Player(object):
@@ -25,6 +25,30 @@ class Player(object):
     @property
     def board(self):
         return self._board
+
+    def play(self):
+        while not self.board.full:  # TODO: end on winning/loosing instead
+            self.move()
+
+    def move(self):
+        self._move_mine()
+        print(self.board)
+        self._move_opponents()
+
+    def _move_mine(self):
+        # put the piece code chosen by the opponent (if it is not 0; otherwise, go straight to the second part)
+        piece_code_for_me = self.get_piece_code()
+        if piece_code_for_me:
+            field_mine = self.pick_field(piece_code_for_me)
+            print(f"Field coordinates for the piece: {list(field_mine)}")
+            self._board.put_piece(piece_code_for_me, field_mine)
+
+    def _move_opponents(self):
+        # pick a piece for the opponent, ask them for the coordinates
+        piece_code_for_them = self.pick_piece()
+        print(f"Piece code for the opponent: {piece_code_for_them}")
+        field_theirs = self.get_coordinates()
+        self._board.put_piece(piece_code_for_them, field_theirs)
 
     def get_piece_code(self):
         check_piece = log_exceptions('quatro_player')(self._board.check_piece)
@@ -75,23 +99,15 @@ class Player(object):
         return self._pick_piece_method()
 
     def _pick_piece_random(self):
-        return random.choice(self._board.piece_codes_available)
+        return random.choice(list(self._board.piece_codes_available))
 
     def pick_field(self, piece_code):
         return self._pick_field_method(piece_code)
 
     def _pick_field_random(self, *args):
-        return random.choice(self._board.board_fields_available)
+        return random.choice(list(self._board.board_fields_available))
 
 
 if __name__ == '__main__':
     player = Player()
-    position = player.get_coordinates()
-    piece = player.get_piece_code()
-    if piece:
-        player.board.put_piece(piece, position)
-    piece = player.get_piece_code()
-    if piece:
-        player.board.put_piece(piece, player.pick_field(piece))
-    print(player.board)
-
+    player.play()

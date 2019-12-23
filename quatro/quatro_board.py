@@ -82,6 +82,10 @@ class Board(object):
 
         return not self.board_fields_taken_state.any()
 
+    @property
+    def full(self) -> bool:
+        return self.board_fields_taken_state.all()
+
     def check_piece(self, piece_code):
         if piece_code in self._piece_codes_taken:
             raise RuntimeError(f"Piece {piece_code} has already been taken")
