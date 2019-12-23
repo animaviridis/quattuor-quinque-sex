@@ -12,7 +12,7 @@ def log_exceptions(log_name=None):
 
             try:
                 ret = func(*args, **kwargs)
-            except (TypeError, ValueError, RuntimeError) as e:
+            except (TypeError, ValueError, RuntimeError, IndexError) as e:
                 logger.error(f"{e}")
 
             return ret

@@ -84,6 +84,8 @@ class Board(object):
         if piece_code not in self._piece_codes_available:
             raise RuntimeError(f"'{piece_code}' is not a valid piece code")
 
+        return True
+
     def check_field(self, pos):
         if not isinstance(pos, tuple):
             raise TypeError(f"'pos' should be a tuple (got {type(pos)})")
@@ -93,6 +95,8 @@ class Board(object):
 
         if self._board_state[pos]:
             raise RuntimeError(f"Board position {pos} is already occupied")
+
+        return True
 
     def put_piece(self, piece_code: str, pos: Tuple[int, int]):
         self.check_field(pos)
