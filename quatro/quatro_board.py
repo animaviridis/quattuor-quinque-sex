@@ -3,7 +3,6 @@ from typing import Tuple
 from time import sleep
 
 from quatro_piece import Piece
-from misc import log_exceptions
 
 
 class Board(object):
@@ -75,7 +74,7 @@ class Board(object):
     def board_fields_available(self):
         """List of coordinates (2-tuples of ints) of available (not yet taken) fields of the board."""
 
-        return list(zip(*np.where(not self.board_fields_taken_state)))
+        return list(zip(*np.where(np.invert(self.board_fields_taken_state))))
 
     @property
     def empty(self) -> bool:
@@ -96,7 +95,7 @@ class Board(object):
         if not isinstance(pos, tuple):
             raise TypeError(f"'pos' should be a tuple (got {type(pos)})")
 
-        if (len(pos) != 2) or any(map(lambda p: not isinstance(p, int), pos)):
+        if (len(pos) != 2) or any(map(lambda p: not isinstance(p, (int, np.integer)), pos)):
             raise ValueError(f"'pos' should be a 2-tuple of integers")
 
         if self._board_state[pos]:

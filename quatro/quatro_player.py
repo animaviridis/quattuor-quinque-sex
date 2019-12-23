@@ -63,10 +63,10 @@ class Player(object):
         xy = ()
         while not valid:
             xy = parse_input()
-            while xy is None:
+            if xy is None:
                 print(f"Invalid coordinates format. "
                       f"Please use the following regex pattern: {self._pos_pattern} (e.g. [2, 3])")
-                xy = parse_input()
+                continue
             valid = check_pos(xy)
 
         return xy
@@ -90,5 +90,8 @@ if __name__ == '__main__':
     piece = player.get_piece_code()
     if piece:
         player.board.put_piece(piece, position)
-    player.get_piece_code()
+    piece = player.get_piece_code()
+    if piece:
+        player.board.put_piece(piece, player.pick_field(piece))
+    print(player.board)
 
