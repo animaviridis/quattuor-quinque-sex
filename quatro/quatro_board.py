@@ -2,7 +2,7 @@ import numpy as np
 from typing import Tuple
 from time import sleep
 
-from quatro_piece import Piece
+from quatro.quatro_piece import Piece
 
 
 class Board(object):
@@ -88,14 +88,17 @@ class Board(object):
 
     def check_piece(self, piece_code):
         if piece_code in self._piece_codes_taken:
-            raise RuntimeError(f"Piece {piece_code} has already been taken")
+            raise RuntimeError(f"Piece {piece_code} has already been taken. Pick from: {self._piece_codes_available}")
 
         if piece_code not in self._piece_codes_available:
-            raise RuntimeError(f"'{piece_code}' is not a valid piece code")
+            raise RuntimeError(f"'{piece_code}' is not a valid piece code. Pick from: {self._piece_codes_available}")
 
         return True
 
     def check_field(self, pos):
+        if self.full:
+            raise RuntimeError(f"The board is already full")
+
         if not isinstance(pos, tuple):
             raise TypeError(f"'pos' should be a tuple (got {type(pos)})")
 
