@@ -12,10 +12,12 @@ class Board(object):
     which is already occupied. Once placed, a piece cannot be moved.
     """
 
+    N = 4
     PIECES = Piece.generate_pieces()
 
     def __init__(self):
-        self._board_state = np.zeros((4, 4), dtype=Piece)
+        self._board_state = np.zeros(2*(self.N,), dtype=Piece)
+        self._points = np.zeros(3*(self.N,), dtype=int)
         self._piece_codes_available = set(self.PIECES.keys())
         self._piece_codes_taken = set()
 
@@ -116,9 +118,33 @@ class Board(object):
 
         piece = self.PIECES[piece_code]
         self._board_state[pos] = piece
+        self._points[pos] = piece.points
         self._piece_codes_available.remove(piece_code)
         self._piece_codes_taken.add(piece_code)
         piece.position = pos
+
+    @property
+    def points(self):
+        return self._points
+
+    def get_scores(self):
+        points = self._points
+
+        col_scores = points.sum(axis=0)
+        row_scores = points.sum(axis=1)
+
+        d1_score = np.trace(points)
+        d2_score = np.flip(points, 0).trace()
+
+        scores = np.concatenate((col_scores, row_scores, [d1_score, d2_score]))
+        return np.abs(scores).max(axis=-1)
+
+    def get_max_score(self):
+        return self.get_scores().max()
+
+    @property
+    def game_completed(self):
+        return self.get_max_score() == self.N
 
 
 if __name__ == '__main__':

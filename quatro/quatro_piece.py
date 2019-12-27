@@ -55,6 +55,7 @@ class Piece(object):
             raise TypeError(f"__init__ takes {len(self.PROP_TEMPLATES)} positional arguments ({len(props)} were given)")
 
         self._value = props
+        self._points = tuple(1 if i else -1 for i in props)
         self._properties = tuple((pt.get_member(props[i]) for i, pt in enumerate(self.PROP_TEMPLATES)))
         self._code = ''.join((p.code for p in self._properties))
 
@@ -71,6 +72,10 @@ class Piece(object):
     @property
     def value_code(self):
         return ''.join((str(v) for v in self.value))
+
+    @property
+    def points(self):
+        return self._points
 
     @property
     def properties(self):

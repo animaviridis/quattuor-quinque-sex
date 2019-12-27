@@ -27,8 +27,9 @@ class Player(object):
         return self._board
 
     def play(self):
-        while not self.board.full:  # TODO: end on winning/loosing instead
+        while not self.board.full and not self.board.game_completed:
             self.move()
+        print("Game finished")
 
     def move(self):
         self._move_mine()
