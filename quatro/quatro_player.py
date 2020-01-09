@@ -27,14 +27,34 @@ class Player(object):
         return self._board
 
     def play(self):
-        while not self.board.full and not self.board.game_completed:
-            self.move()
-        print("Game finished")
+        b = self.board
+        game_status = 0
 
-    def move(self):
-        self._move_mine()
-        print(self.board)
-        self._move_opponents()
+        while not b.full:
+            # 1) my move
+            if b.game_completed:
+                game_status = -1  # the other player has won in their last move
+                break
+            else:
+                self._move_mine()
+
+            # 2) print board status for the other player (possibly human) to see
+            print(b)
+
+            # 3) other player's move
+            if b.game_completed:
+                game_status = 1  # I have just won
+                break
+            else:
+                self._move_opponents()
+
+        # Report the end of the game
+        print("Game finished!")
+        print(b)
+        if game_status:
+            print(f"{'I' if game_status == 1 else 'You'} have won!")
+        else:
+            print(f"It's a draw")
 
     def _move_mine(self):
         # put the piece code chosen by the opponent (if it is not 0; otherwise, go straight to the second part)
