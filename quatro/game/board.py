@@ -2,7 +2,7 @@ import numpy as np
 from typing import Tuple
 import copy
 
-from quatro.quatro_piece import Piece
+from quatro.game.piece import Piece
 
 
 class Board(object):

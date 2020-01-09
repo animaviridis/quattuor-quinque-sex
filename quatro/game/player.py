@@ -3,8 +3,8 @@ import re
 from time import sleep
 from typing import Tuple, Union
 
-from quatro.quatro_board import Board
-from quatro.misc import log_exceptions
+from quatro.game.board import Board
+from quatro.game.misc import log_exceptions
 
 
 class Player(object):
