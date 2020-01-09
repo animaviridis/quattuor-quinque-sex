@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Tuple
-from time import sleep
+import copy
 
 from quatro.quatro_piece import Piece
 
@@ -146,10 +146,22 @@ class Board(object):
     def game_completed(self):
         return self.get_max_score() == self.N
 
+    def copy(self):
+        return copy.deepcopy(self)
+
+    def probe_piece(self, *args, **kwargs):
+        """Create a copy of the current board and put the piece in it. Return the new board."""
+
+        new_board = self.copy()
+        new_board.put_piece(*args, **kwargs)
+        return new_board
+
 
 if __name__ == '__main__':
     board = Board()
     board.put_piece('TBCH', (2, 3))
     board.put_piece('SRSS', (1, 0))
     print(board)
-    sleep(0.1)
+    board_copy = board.probe_piece('TRCH', (0, 0))
+    print(board_copy)
+    print(board)
